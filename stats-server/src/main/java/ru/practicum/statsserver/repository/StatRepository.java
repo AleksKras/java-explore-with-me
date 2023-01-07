@@ -13,7 +13,7 @@ public interface StatRepository extends JpaRepository<Hit, Long> {
 
     @Query(value = " select h.app as app, h.uri as uri, count(*) as hits from hits h " +
             "where h.uri in (:uris) and h.created between :startDate and :endDate " +
-            "group by h.uri",
+            "group by h.uri, h.app",
             nativeQuery = true)
     List<Stats> getStat(@Param("uris") String uris,
                         @Param("startDate") LocalDateTime startDate,
@@ -21,7 +21,7 @@ public interface StatRepository extends JpaRepository<Hit, Long> {
 
     @Query(value = " select h.app as app, h.uri  as uri, count(h.ip) as hits from hits h " +
             "where h.uri in (:uris) and h.created between :startDate and :endDate " +
-            "group by h.ip, h.uri",
+            "group by h.ip, h.uri, h.app",
             nativeQuery = true)
     List<Stats> getUniqueStat(@Param("uris") String uris,
                               @Param("startDate") LocalDateTime startDate,

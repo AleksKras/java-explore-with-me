@@ -1,3 +1,4 @@
+
 package ru.practicum.ewm.restclient;
 
 import java.time.LocalDateTime;
@@ -5,19 +6,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.practicum.ewm.model.Stats;
 import ru.practicum.ewm.model.dto.HitDto;
 
 @Slf4j
+@AllArgsConstructor
+@Component
 public class StatClient {
-    private static final  String STATSERVERPATH = "http://localhost:9090";
 
-    public static List<Stats> getStat(LocalDateTime start, LocalDateTime end, String uris, Boolean unique) {
+    private final Environment environment;
+
+
+    public List<Stats> getStat(LocalDateTime start, LocalDateTime end, String uris, Boolean unique) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> parameters = Map.of(
                 "start", start,
@@ -28,18 +37,19 @@ public class StatClient {
 
         log.info(parameters.toString());
         List<Stats> statsList = new ArrayList<>();
-
-        return restTemplate.getForObject(STATSERVERPATH + "/stats", statsList.getClass(), parameters);
+        String statServerPath = environment.getProperty("spring.server.url");
+        return restTemplate.getForObject(statServerPath + "/stats", statsList.getClass(), parameters);
     }
 
-    public static void postHit(HitDto hitDto) {
+    public void postHit(HitDto hitDto) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<HitDto> requestBody = new HttpEntity<>(hitDto, headers);
-        HitDto hitDtoResp = restTemplate.postForObject(STATSERVERPATH + "/hit", requestBody, HitDto.class);
+        String statServerPath = environment.getProperty("spring.server.url");
+        HitDto hitDtoResp = restTemplate.postForObject(statServerPath + "/hit", requestBody, HitDto.class);
 
         if (hitDtoResp != null) {
             log.info("Статистика сохранена");

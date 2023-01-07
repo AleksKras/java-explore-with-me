@@ -23,12 +23,14 @@ public class PublicController {
     private final CompilationService compilationService;
     private final CategoryService categoryService;
 
+    private final StatClient statClient;
+
     //Events
     @GetMapping("/events/{id}")
     public EventDto getEvents(@PathVariable(required = true) Long id,
                               HttpServletRequest request) {
         log.info("Получен Get запрос к эндпоинту: /events, id = " + id);
-        StatClient.postHit(new HitDto("ewm-server",
+        statClient.postHit(new HitDto("ewm-server",
                 request.getRequestURI(),
                 request.getRemoteAddr(),
                 LocalDateTime.now()));
@@ -52,7 +54,7 @@ public class PublicController {
                                             @RequestParam(value = "size", defaultValue = "10") int size,
                                             HttpServletRequest request) {
         log.info("Получен Get запрос к эндпоинту: /events");
-        StatClient.postHit(new HitDto("ewm-server",
+        statClient.postHit(new HitDto("ewm-server",
                 request.getRequestURI(),
                 request.getRemoteAddr(),
                 LocalDateTime.now()));

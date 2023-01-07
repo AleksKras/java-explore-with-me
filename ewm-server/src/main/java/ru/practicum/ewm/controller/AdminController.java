@@ -10,6 +10,7 @@ import ru.practicum.ewm.service.CompilationService;
 import ru.practicum.ewm.service.EventService;
 import ru.practicum.ewm.service.UserService;
 
+
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;

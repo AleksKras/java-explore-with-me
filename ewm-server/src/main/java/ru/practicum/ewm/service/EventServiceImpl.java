@@ -31,6 +31,8 @@ public class EventServiceImpl implements EventService {
     UserService userService;
     EventMapper eventMapper;
 
+    StatClient statClient;
+
     @Override
     public List<EventDto> getAll(List<Long> users,
                                  List<String> states,
@@ -48,17 +50,26 @@ public class EventServiceImpl implements EventService {
             for (String state : states) {
                 eventStates.add(EventState.valueOf(state));
             }
-
         } else {
             eventStates = null;
         }
 
-        Page events = eventRepository.allEventsByUser(users,
-                eventStates,
-                categories,
-                rangeStart,
-                rangeEnd,
-                PageMapper.getPagable(from, size));
+        Page events;
+
+        if (rangeEnd != null) {
+            events = eventRepository.allEventsByUserWithEndDate(users,
+                    eventStates,
+                    categories,
+                    rangeStart,
+                    rangeEnd,
+                    PageMapper.getPagable(from, size));
+        } else {
+            events = eventRepository.allEventsByUser(users,
+                    eventStates,
+                    categories,
+                    rangeStart,
+                    PageMapper.getPagable(from, size));
+        }
 
         List<Event> eventList = new ArrayList<>();
         if (events != null && events.hasContent()) {
@@ -87,12 +98,22 @@ public class EventServiceImpl implements EventService {
 
         List<Long> categoriesList = List.of(categories);
 
-        Page events = eventRepository.allEventsShort("%" + text + "%",
-                categoriesList,
-                paid,
-                rangeStart,
-                rangeEnd,
-                PageMapper.getPagable(from, size));
+        Page events;
+        if (rangeEnd != null) {
+            events = eventRepository.allEventsShortWithEndDate("%" + text + "%",
+                    categoriesList,
+                    paid,
+                    rangeStart,
+                    rangeEnd,
+                    PageMapper.getPagable(from, size));
+        } else {
+            events = eventRepository.allEventsShort("%" + text + "%",
+                    categoriesList,
+                    paid,
+                    rangeStart,
+                    PageMapper.getPagable(from, size));
+        }
+
         List<Event> eventList = new ArrayList<>();
         if (events != null && events.hasContent()) {
             eventList = events.getContent();
@@ -102,7 +123,7 @@ public class EventServiceImpl implements EventService {
         for (Event event : eventList) {
             Long evenId = event.getId();
             String requestUrl = "http://localhost:8080/events/" + evenId;
-            List<Stats> statsList = StatClient.getStat(event.getCreatedOn(), LocalDateTime.now(), requestUrl, false);
+            List<Stats> statsList = statClient.getStat(event.getCreatedOn(), LocalDateTime.now(), requestUrl, false);
             long hits = 0;
             for (Stats stats : statsList) {
                 hits = hits + stats.getHits();
@@ -130,7 +151,7 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Неверный статус события");
         }
         event.setConfirmedRequests(requestRepository.countAllByStatusIsAndEvent_id(RequestStatus.PENDING, id));
-        List<Stats> statsList = StatClient.getStat(event.getCreatedOn(), LocalDateTime.now(), requestUrl, false);
+        List<Stats> statsList = statClient.getStat(event.getCreatedOn(), LocalDateTime.now(), requestUrl, false);
         long hits = 0;
         for (Stats stats : statsList) {
             hits = hits + stats.getHits();
