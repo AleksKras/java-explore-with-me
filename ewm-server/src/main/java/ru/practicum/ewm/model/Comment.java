@@ -14,7 +14,7 @@ public class Comment {
     private long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "AUTHOR_ID")
-    private User Author;
+    private User author;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EVENT_ID")
     private Event event;

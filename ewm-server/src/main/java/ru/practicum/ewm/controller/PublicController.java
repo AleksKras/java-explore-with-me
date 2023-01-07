@@ -96,9 +96,9 @@ public class PublicController {
     }
 
     @GetMapping("/comments/{eventId}")
-    public List<CommentDto> GetAllCommentByEvent(@PathVariable(required = true) Long eventId,
-                                                @RequestParam(value = "from", defaultValue = "0") int from,
-                                                @RequestParam(value = "size", defaultValue = "10") int size) {
+    public List<CommentDto> getAllCommentByEvent(@PathVariable(required = true) Long eventId,
+                                                 @RequestParam(value = "from", defaultValue = "0") int from,
+                                                 @RequestParam(value = "size", defaultValue = "10") int size) {
         log.info("Получен Post запрос к эндпоинту: /events/, id = " + eventId);
         return commentService.getAllByEvent(eventId,from,size);
     }

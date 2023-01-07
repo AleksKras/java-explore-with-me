@@ -1,17 +1,14 @@
 package ru.practicum.ewm.service;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.type.TrueFalseType;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.exception.ValidationException;
 import ru.practicum.ewm.mapper.CommentMapper;
 import ru.practicum.ewm.mapper.PageMapper;
-import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.model.Comment;
 import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.User;
-import ru.practicum.ewm.model.dto.CategoryDto;
 import ru.practicum.ewm.model.dto.CommentDto;
 import ru.practicum.ewm.model.dto.NewCommentDto;
 import ru.practicum.ewm.repository.CommentRepository;
@@ -45,8 +42,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto update(NewCommentDto newCommentDto, long userId, long сommentId) {
-        Comment comment = commentRepository.getReferenceById(сommentId);
+    public CommentDto update(NewCommentDto newCommentDto, long userId, long commentId) {
+        Comment comment = commentRepository.getReferenceById(commentId);
         if (comment.getAuthor().getId() != userId) {
             throw new ValidationException("Неверный ID автора");
         }

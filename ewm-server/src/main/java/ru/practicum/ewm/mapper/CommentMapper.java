@@ -6,6 +6,7 @@ import ru.practicum.ewm.model.dto.CommentDto;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
+
     Comment toComment(CommentDto commentDto);
 
     CommentDto toDto(Comment comment);

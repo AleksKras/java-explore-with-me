@@ -142,7 +142,7 @@ public class AdminController {
     //comments
 
     @DeleteMapping("/comments/{commentId}")
-    public void GetAllCommentByUser(@PathVariable(required = true) Long commentId) {
+    public void deleteComment(@PathVariable(required = true) Long commentId) {
         log.info("Получен Post запрос к эндпоинту: /comments, id = " + commentId);
         commentService.delete(commentId);
     }

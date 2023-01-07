@@ -122,9 +122,9 @@ public class PrivateController {
     }
 
     @GetMapping("/comments/{userId}")
-    public List<CommentDto> GetAllCommentByUser(@PathVariable(required = true) Long userId,
-                                          @RequestParam(value = "from", defaultValue = "0") int from,
-                                          @RequestParam(value = "size", defaultValue = "10") int size) {
+    public List<CommentDto> getAllCommentByUser(@PathVariable(required = true) Long userId,
+                                                @RequestParam(value = "from", defaultValue = "0") int from,
+                                                @RequestParam(value = "size", defaultValue = "10") int size) {
         log.info("Получен Post запрос к эндпоинту: /users/events/comments, id = " + userId);
         return commentService.getAllByUser(userId,from,size);
     }
