@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.*;
-import ru.practicum.ewm.service.CategoryService;
-import ru.practicum.ewm.service.CompilationService;
-import ru.practicum.ewm.service.EventService;
-import ru.practicum.ewm.service.UserService;
+import ru.practicum.ewm.service.*;
 
 
 import javax.validation.Valid;
@@ -25,6 +22,8 @@ public class AdminController {
     private final CategoryService categoryService;
     private final EventService eventService;
     private final CompilationService compilationService;
+
+    private final CommentService commentService;
 
     //events
     @GetMapping("/events")
@@ -138,6 +137,14 @@ public class AdminController {
     public void unpinCompilation(@PathVariable(required = true) long id) {
         log.info("Получен patch запрос к эндпоинту: /compilation. открепление.");
         compilationService.unpinCompilation(id);
+    }
+
+    //comments
+
+    @DeleteMapping("/comments/{commentId}")
+    public void GetAllCommentByUser(@PathVariable(required = true) Long commentId) {
+        log.info("Получен Post запрос к эндпоинту: /comments, id = " + commentId);
+        commentService.delete(commentId);
     }
 
 }

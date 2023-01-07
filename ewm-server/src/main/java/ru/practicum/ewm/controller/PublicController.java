@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.*;
 import ru.practicum.ewm.restclient.StatClient;
 import ru.practicum.ewm.service.CategoryService;
+import ru.practicum.ewm.service.CommentService;
 import ru.practicum.ewm.service.CompilationService;
 import ru.practicum.ewm.service.EventService;
 
@@ -22,6 +23,8 @@ public class PublicController {
     private final EventService eventService;
     private final CompilationService compilationService;
     private final CategoryService categoryService;
+
+    private final CommentService commentService;
 
     private final StatClient statClient;
 
@@ -91,5 +94,14 @@ public class PublicController {
         log.info("Получен Get запрос к эндпоинту: /categories, id = " + id);
         return categoryService.getById(id);
     }
+
+    @GetMapping("/comments/{eventId}")
+    public List<CommentDto> GetAllCommentByEvent(@PathVariable(required = true) Long eventId,
+                                                @RequestParam(value = "from", defaultValue = "0") int from,
+                                                @RequestParam(value = "size", defaultValue = "10") int size) {
+        log.info("Получен Post запрос к эндпоинту: /events/, id = " + eventId);
+        return commentService.getAllByEvent(eventId,from,size);
+    }
+
 
 }
