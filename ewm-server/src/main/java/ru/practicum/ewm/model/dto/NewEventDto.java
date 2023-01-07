@@ -11,19 +11,19 @@ import java.time.LocalDateTime;
 @Data
 public class NewEventDto {
     @NotBlank
-    String annotation;
+    private String annotation;
     @NotNull
-    Long category;
+    private Long category;
     @NotBlank
-    String description;
+    private String description;
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
-    LocalDateTime eventDate;
+    private LocalDateTime eventDate;
     @NotNull
-    Location location;
-    boolean paid;
-    int participantLimit;
-    boolean requestModeration;
+    private Location location;
+    private boolean paid;
+    private int participantLimit;
+    private boolean requestModeration;
     @NotBlank
-    String title;
+    private String title;
 }

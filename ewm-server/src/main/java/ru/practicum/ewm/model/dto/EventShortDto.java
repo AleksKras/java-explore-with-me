@@ -7,16 +7,16 @@ import java.time.LocalDateTime;
 
 @Data
 public class EventShortDto {
-    long id;
-    String annotation;
-    CategoryDto category;
-    int confirmedRequests;
-    String description;
+    private long id;
+    private String annotation;
+    private CategoryDto category;
+    private int confirmedRequests;
+    private String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
-    LocalDateTime eventDate;
-    UserDto initiator;
-    boolean paid;
-    String title;
-    long views;
+    private LocalDateTime eventDate;
+    private UserDto initiator;
+    private boolean paid;
+    private String title;
+    private long views;
 }
 

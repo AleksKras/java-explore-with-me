@@ -7,8 +7,8 @@ import java.util.List;
 
 @Data
 public class NewCompilationDto {
-    List<Long> events;
-    boolean pinned;
+    private List<Long> events;
+    private boolean pinned;
     @NotBlank
-    String title;
+    private String title;
 }

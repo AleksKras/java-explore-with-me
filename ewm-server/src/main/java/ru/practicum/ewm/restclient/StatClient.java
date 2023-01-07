@@ -15,7 +15,7 @@ import ru.practicum.ewm.model.dto.HitDto;
 
 @Slf4j
 public class StatClient {
-    private final static String STATSERVERPATH = "http://localhost:9090";
+    private static final  String STATSERVERPATH = "http://localhost:9090";
 
     public static List<Stats> getStat(LocalDateTime start, LocalDateTime end, String uris, Boolean unique) {
         RestTemplate restTemplate = new RestTemplate();

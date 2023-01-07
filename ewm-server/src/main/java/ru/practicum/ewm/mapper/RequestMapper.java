@@ -9,8 +9,9 @@ import ru.practicum.ewm.model.dto.RequestDto;
 @Mapper(componentModel = "spring")
 public interface RequestMapper {
 
-    Request toRequest (RequestDto requestDto);
-    RequestDto toDto (Request request);
+    Request toRequest(RequestDto requestDto);
+
+    RequestDto toDto(Request request);
 
     @Mapping(source = "event.id", target = "event")
     @Mapping(source = "requester.id", target = "requester")

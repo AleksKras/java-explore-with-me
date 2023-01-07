@@ -6,8 +6,8 @@ import java.util.List;
 
 @Data
 public class CompilationDto {
-    long id;
-    List<EventShortDto> events;
-    boolean pinned;
-    String title;
+    private long id;
+    private List<EventShortDto> events;
+    private boolean pinned;
+    private String title;
 }

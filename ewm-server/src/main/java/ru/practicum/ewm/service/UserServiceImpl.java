@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getById(long userId){
+    public UserDto getById(long userId) {
         return userMapper.toDto(userRepository.getReferenceById(userId));
     }
 

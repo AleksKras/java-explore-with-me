@@ -7,14 +7,14 @@ import java.time.LocalDateTime;
 
 @Data
 public class UpdateEventDto { Long eventId;
-    String annotation;
-    Integer category;
-    String description;
+    private String annotation;
+    private Integer category;
+    private String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
-    LocalDateTime eventDate;
-    boolean paid;
-    int participantLimit;
-    String title;
+    private LocalDateTime eventDate;
+    private boolean paid;
+    private int participantLimit;
+    private String title;
 }
 
 
