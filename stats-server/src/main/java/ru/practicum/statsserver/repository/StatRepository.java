@@ -15,7 +15,7 @@ public interface StatRepository extends JpaRepository<Hit, Long> {
             "where h.uri in (:uris) and h.created between :startDate and :endDate " +
             "group by h.uri",
             nativeQuery = true)
-    List<Stats> GetStat(@Param("uris") String uris,
+    List<Stats> getStat(@Param("uris") String uris,
                         @Param("startDate") LocalDateTime startDate,
                         @Param("endDate") LocalDateTime endDate);
 
@@ -23,7 +23,7 @@ public interface StatRepository extends JpaRepository<Hit, Long> {
             "where h.uri in (:uris) and h.created between :startDate and :endDate " +
             "group by h.ip, h.uri",
             nativeQuery = true)
-    List<Stats> GetUniqueStat(@Param("uris") String uris,
+    List<Stats> getUniqueStat(@Param("uris") String uris,
                               @Param("startDate") LocalDateTime startDate,
                               @Param("endDate") LocalDateTime endDate);
 

@@ -30,9 +30,9 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<Stats> getStats(LocalDateTime start, LocalDateTime end, String uris, boolean unique) {
         if (unique) {
-            return statRepository.GetUniqueStat(uris, start, end);
+            return statRepository.getUniqueStat(uris, start, end);
         } else {
-            return statRepository.GetStat(uris, start, end);
+            return statRepository.getStat(uris, start, end);
         }
 
     }
