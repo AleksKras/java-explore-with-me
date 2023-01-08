@@ -15,7 +15,6 @@ import ru.practicum.ewm.model.dto.*;
 import ru.practicum.ewm.service.EventService;
 
 @Component
-@Slf4j
 @AllArgsConstructor
 public class CompilationMapperImpl implements CompilationMapper {
 
@@ -219,7 +218,6 @@ public class CompilationMapperImpl implements CompilationMapper {
         if (list == null) {
             return null;
         }
-        log.info(list.toString());
         List<Event> list1 = new ArrayList<>();
         for (Long id : list) {
             list1.add(eventService.getEventById(id));

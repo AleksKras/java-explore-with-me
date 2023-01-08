@@ -22,12 +22,12 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryMapper categoryMapper;
 
     @Override
-    public CategoryDto create(@Valid CategoryDto categoryDto) {
+    public CategoryDto create(CategoryDto categoryDto) {
         return categoryMapper.toDto(categoryRepository.save(categoryMapper.toCategory(categoryDto)));
     }
 
     @Override
-    public CategoryDto update(@Valid CategoryDto categoryDto) {
+    public CategoryDto update(CategoryDto categoryDto) {
         return categoryMapper.toDto(categoryRepository.save(categoryMapper.toCategory(categoryDto)));
     }
 

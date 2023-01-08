@@ -30,4 +30,10 @@ public class ErrorHandler {
         return e;
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ForbiddenException handleConstraintViolationException(final ForbiddenException e) {
+        return e;
+    }
+
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import ru.practicum.ewm.exception.ForbiddenException;
 import ru.practicum.ewm.exception.ValidationException;
 import ru.practicum.ewm.mapper.RequestMapper;
 import ru.practicum.ewm.model.*;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Validated
 @Service
 @AllArgsConstructor
 public class RequestServiceImpl implements RequestService {
@@ -31,7 +31,7 @@ public class RequestServiceImpl implements RequestService {
         User user = userRepository.getReferenceById(id);
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getInitiator().getId() != id) {
-            throw new ValidationException("Неверный ID инициатора");
+            throw new ForbiddenException("Неверный ID инициатора");
         }
         List<Request> requestList = requestRepository.findAllByEvent_id(event.getId());
         List<ParticipationRequestDto> participationRequestDtoList = new ArrayList<>();
@@ -48,7 +48,7 @@ public class RequestServiceImpl implements RequestService {
             throw new ValidationException("Неверный ID события");
         }
         if (request.getEvent().getInitiator().getId() != id) {
-            throw new ValidationException("Неверный ID инициатора");
+            throw new ForbiddenException("Неверный ID инициатора");
         }
         request.setStatus(RequestStatus.CONFIRMED);
         return requestMapper.toParticipationRequestDto(requestRepository.save(request));
@@ -61,7 +61,7 @@ public class RequestServiceImpl implements RequestService {
             throw new ValidationException("Неверный ID события");
         }
         if (request.getEvent().getInitiator().getId() != id) {
-            throw new ValidationException("Неверный ID инициатора");
+            throw new ForbiddenException("Неверный ID инициатора");
         }
         request.setStatus(RequestStatus.REJECTED);
         return requestMapper.toParticipationRequestDto(requestRepository.save(request));
@@ -111,7 +111,7 @@ public class RequestServiceImpl implements RequestService {
     public ParticipationRequestDto cancelRequest(long id, long requestId) {
         Request request = requestRepository.getReferenceById(requestId);
         if (request.getRequester().getId() != id) {
-            throw new ValidationException("Неверный ID инициатора");
+            throw new ForbiddenException("Неверный ID инициатора");
         }
         request.setStatus(RequestStatus.CANCELED);
         return requestMapper.toParticipationRequestDto(requestRepository.save(request));
