@@ -10,7 +10,6 @@ import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.model.dto.CategoryDto;
 import ru.practicum.ewm.repository.CategoryRepository;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
