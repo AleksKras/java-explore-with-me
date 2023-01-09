@@ -15,6 +15,8 @@ public interface CommentService {
 
     List<CommentDto> getAllByEvent(long eventId, int from, int size);
 
+    List<CommentDto> getAllByEvent(long eventId);
+
     void delete(long commentId);
 
 }

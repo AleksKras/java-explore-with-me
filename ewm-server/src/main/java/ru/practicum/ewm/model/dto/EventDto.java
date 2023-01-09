@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.ewm.model.EventState;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -31,4 +32,5 @@ public class EventDto {
     private EventState state;
     private String title;
     private long views;
+    private List<CommentDto> comments;
 }

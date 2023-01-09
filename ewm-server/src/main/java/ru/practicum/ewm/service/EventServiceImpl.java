@@ -1,10 +1,9 @@
 package ru.practicum.ewm.service;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
+import ru.practicum.ewm.exception.ForbiddenException;
 import ru.practicum.ewm.exception.ValidationException;
 import ru.practicum.ewm.mapper.EventMapper;
 import ru.practicum.ewm.mapper.PageMapper;
@@ -17,12 +16,11 @@ import ru.practicum.ewm.repository.EventRepository;
 import ru.practicum.ewm.repository.RequestRepository;
 import ru.practicum.ewm.restclient.StatClient;
 
+import javax.naming.event.EventDirContext;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
-@Validated
 @Service
 @AllArgsConstructor
 public class EventServiceImpl implements EventService {
@@ -30,6 +28,8 @@ public class EventServiceImpl implements EventService {
     RequestRepository requestRepository;
     UserService userService;
     EventMapper eventMapper;
+
+    CommentService commentService;
 
     StatClient statClient;
 
@@ -78,8 +78,9 @@ public class EventServiceImpl implements EventService {
         List<EventDto> eventDtoList = new ArrayList<>();
 
         for (Event event : eventList) {
-
-            eventDtoList.add(eventMapper.toDto(event));
+            EventDto eventDto =eventMapper.toDto(event);
+            eventDto.setComments(commentService.getAllByEvent(event.getId()));
+            eventDtoList.add(eventDto);
         }
         return eventDtoList;
     }
@@ -119,18 +120,29 @@ public class EventServiceImpl implements EventService {
             eventList = events.getContent();
         }
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
+        List<String> requestUrl = new ArrayList<>();
+        LocalDateTime minCreateDate = LocalDateTime.now();
+        for (Event event : eventList) {
+            Long evenId = event.getId();
+            requestUrl.add("/events/" + evenId);
+
+            if (minCreateDate.isAfter(event.getCreatedOn())) {
+                minCreateDate = event.getCreatedOn();
+            }
+
+        }
+        List<Stats> statsList = statClient.getStat(minCreateDate, LocalDateTime.now(), requestUrl, false);
 
         for (Event event : eventList) {
             Long evenId = event.getId();
-            String requestUrl = "http://localhost:8080/events/" + evenId;
-            List<Stats> statsList = statClient.getStat(event.getCreatedOn(), LocalDateTime.now(), requestUrl, false);
             long hits = 0;
             for (Stats stats : statsList) {
-                hits = hits + stats.getHits();
+                if (stats.getUri().equals("/events/" + evenId)) {
+                    hits = hits + stats.getHits();
+                }
             }
             event.setViews(hits);
             event.setConfirmedRequests(requestRepository.countAllByStatusIsAndEvent_id(RequestStatus.CONFIRMED, evenId));
-            log.info(event.toString());
             eventShortDtoList.add(eventMapper.toShortDto(event));
         }
         return eventShortDtoList;
@@ -151,13 +163,15 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Неверный статус события");
         }
         event.setConfirmedRequests(requestRepository.countAllByStatusIsAndEvent_id(RequestStatus.PENDING, id));
-        List<Stats> statsList = statClient.getStat(event.getCreatedOn(), LocalDateTime.now(), requestUrl, false);
+        List<Stats> statsList = statClient.getStat(event.getCreatedOn(), LocalDateTime.now(), List.of(requestUrl), false);
         long hits = 0;
         for (Stats stats : statsList) {
             hits = hits + stats.getHits();
         }
         event.setViews(hits);
-        return eventMapper.toDto(event);
+        EventDto eventDto = eventMapper.toDto(event);
+        eventDto.setComments(commentService.getAllByEvent(event.getId()));
+        return eventDto;
     }
 
     @Override
@@ -169,9 +183,11 @@ public class EventServiceImpl implements EventService {
     public EventDto getEventByUserId(long id, long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getInitiator().getId() != id) {
-            throw new ValidationException("Неверный ID инициатора");
+            throw new ForbiddenException("Неверный ID инициатора");
         }
-        return eventMapper.toDto(event);
+        EventDto eventDto = eventMapper.toDto(event);
+        eventDto.setComments(commentService.getAllByEvent(event.getId()));
+        return eventDto;
     }
 
     @Override
@@ -203,7 +219,7 @@ public class EventServiceImpl implements EventService {
     public EventDto update(UpdateEventDto eventDto, long userId) {
         Event event = eventRepository.getReferenceById(eventDto.getEventId());
         if (event.getInitiator().getId() != userId) {
-            throw new ValidationException("Неверный ID инициатора");
+            throw new ForbiddenException("Неверный ID инициатора");
         }
         eventMapper.updateEventFromDto(eventDto, event);
         return eventMapper.toDto(eventRepository.save(event));
@@ -239,7 +255,7 @@ public class EventServiceImpl implements EventService {
     public EventDto rejectEventByUserId(long id, long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getInitiator().getId() != id) {
-            throw new ValidationException("Пользователь не является инициатором Event");
+            throw new ForbiddenException("Пользователь не является инициатором Event");
         }
         if (event.getState() != EventState.PENDING) {
             throw new ValidationException("Отмена доступна для событий на модерации");

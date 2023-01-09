@@ -8,10 +8,12 @@ import ru.practicum.ewm.mapper.CommentMapper;
 import ru.practicum.ewm.mapper.PageMapper;
 import ru.practicum.ewm.model.Comment;
 import ru.practicum.ewm.model.Event;
+import ru.practicum.ewm.model.EventState;
 import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.model.dto.CommentDto;
 import ru.practicum.ewm.model.dto.NewCommentDto;
 import ru.practicum.ewm.repository.CommentRepository;
+import ru.practicum.ewm.repository.EventRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,15 +25,18 @@ public class CommentServiceImpl implements CommentService {
 
     CommentRepository commentRepository;
     UserService userService;
-    EventService eventService;
+    EventRepository eventRepository;
 
     CommentMapper commentMapper;
 
 
     @Override
     public CommentDto create(NewCommentDto newCommentDto, long userId, long eventId) {
-        Event event = eventService.getEventById(eventId);
+        Event event = eventRepository.getReferenceById(eventId);
         User user = userService.getUserById(userId);
+        if (event.getState() != EventState.PUBLISHED) {
+            throw new ValidationException("Событие должно быть опубликовано");
+        }
         Comment comment = new Comment();
         comment.setAuthor(user);
         comment.setEvent(event);
@@ -62,6 +67,16 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentDto> getAllByEvent(long eventId, int from, int size) {
         Page<Comment> commentPage = commentRepository.findAllByEvent_Id(eventId, PageMapper.getPagable(from, size));
         return pageToDoList(commentPage);
+    }
+
+    @Override
+    public List<CommentDto> getAllByEvent(long eventId) {
+        List<Comment> commentList = commentRepository.findAllByEvent_Id(eventId);
+        List<CommentDto> commentDtoList = new ArrayList<>();
+        for (Comment comment : commentList) {
+            commentDtoList.add(commentMapper.toDto(comment));
+        }
+        return commentDtoList;
     }
 
     @Override

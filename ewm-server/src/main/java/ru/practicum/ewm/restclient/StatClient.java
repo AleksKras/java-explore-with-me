@@ -25,7 +25,7 @@ public class StatClient {
     private final Environment environment;
 
 
-    public List<Stats> getStat(LocalDateTime start, LocalDateTime end, String uris, Boolean unique) {
+    public List<Stats> getStat(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> parameters = Map.of(
                 "start", start,

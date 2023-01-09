@@ -30,7 +30,7 @@ public class PublicController {
 
     //Events
     @GetMapping("/events/{id}")
-    public EventDto getEvents(@PathVariable(required = true) Long id,
+    public EventDto getEvents(@PathVariable Long id,
                               HttpServletRequest request) {
         log.info("Получен Get запрос к эндпоинту: /events, id = " + id);
         statClient.postHit(new HitDto("ewm-server",
@@ -75,7 +75,7 @@ public class PublicController {
     }
 
     @GetMapping("/compilations/{id}")
-    public CompilationDto getCompilation(@PathVariable(required = true) long id) {
+    public CompilationDto getCompilation(@PathVariable long id) {
         log.info("Получен Get запрос к эндпоинту: /events, id = " + id);
         return compilationService.getById(id);
     }
@@ -90,13 +90,13 @@ public class PublicController {
     }
 
     @GetMapping("/categories/{id}")
-    public CategoryDto getCategory(@PathVariable(required = true) long id) {
+    public CategoryDto getCategory(@PathVariable long id) {
         log.info("Получен Get запрос к эндпоинту: /categories, id = " + id);
         return categoryService.getById(id);
     }
 
     @GetMapping("/comments/{eventId}")
-    public List<CommentDto> getAllCommentByEvent(@PathVariable(required = true) Long eventId,
+    public List<CommentDto> getAllCommentByEvent(@PathVariable Long eventId,
                                                  @RequestParam(value = "from", defaultValue = "0") int from,
                                                  @RequestParam(value = "size", defaultValue = "10") int size) {
         log.info("Получен Post запрос к эндпоинту: /events/, id = " + eventId);
