@@ -16,7 +16,6 @@ import ru.practicum.ewm.repository.EventRepository;
 import ru.practicum.ewm.repository.RequestRepository;
 import ru.practicum.ewm.restclient.StatClient;
 
-import javax.naming.event.EventDirContext;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +77,7 @@ public class EventServiceImpl implements EventService {
         List<EventDto> eventDtoList = new ArrayList<>();
 
         for (Event event : eventList) {
-            EventDto eventDto =eventMapper.toDto(event);
+            EventDto eventDto = eventMapper.toDto(event);
             eventDto.setComments(commentService.getAllByEvent(event.getId()));
             eventDtoList.add(eventDto);
         }

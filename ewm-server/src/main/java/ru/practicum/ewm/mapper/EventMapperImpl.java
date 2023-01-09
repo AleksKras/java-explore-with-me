@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import ru.practicum.ewm.model.*;
 import ru.practicum.ewm.model.dto.*;
 import ru.practicum.ewm.service.CategoryService;
-import ru.practicum.ewm.service.CommentService;
 
 import java.time.LocalDateTime;
 
