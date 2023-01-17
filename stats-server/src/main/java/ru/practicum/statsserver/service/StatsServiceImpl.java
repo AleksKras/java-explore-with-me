@@ -2,6 +2,7 @@ package ru.practicum.statsserver.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.practicum.statsserver.mapper.HitMapper;
 import ru.practicum.statsserver.model.HitDto;
@@ -28,11 +29,11 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<Stats> getStats(LocalDateTime start, LocalDateTime end, String uris, boolean unique) {
+    public List<Stats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         if (unique) {
-            return statRepository.getUniqueStat(uris, start, end);
+            return statRepository.getUniqueStat(StringUtils.join(uris, ","), start, end);
         } else {
-            return statRepository.getStat(uris, start, end);
+            return statRepository.getStat(StringUtils.join(uris, ","), start, end);
         }
 
     }

@@ -28,7 +28,7 @@ public class StatController {
                                 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startRange,
                                 @RequestParam(value = "end", required = false)
                                 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endRange,
-                                @RequestParam(value = "uris", required = false) String uris,
+                                @RequestParam(value = "uris", required = false) List<String> uris,
                                 @RequestParam(value = "unique", required = false) boolean unique) {
         log.info("Получен Get запроск эндпоинту: /stats");
         return statsService.getStats(startRange, endRange, uris, unique);

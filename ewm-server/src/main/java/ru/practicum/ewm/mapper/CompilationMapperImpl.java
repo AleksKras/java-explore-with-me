@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.model.Compilation;
@@ -15,7 +14,6 @@ import ru.practicum.ewm.model.dto.*;
 import ru.practicum.ewm.service.EventService;
 
 @Component
-@Slf4j
 @AllArgsConstructor
 public class CompilationMapperImpl implements CompilationMapper {
 
@@ -219,7 +217,6 @@ public class CompilationMapperImpl implements CompilationMapper {
         if (list == null) {
             return null;
         }
-        log.info(list.toString());
         List<Event> list1 = new ArrayList<>();
         for (Long id : list) {
             list1.add(eventService.getEventById(id));
