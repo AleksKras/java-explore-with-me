@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.mapper.CompilationMapper;
 import ru.practicum.ewm.model.Compilation;
 import ru.practicum.ewm.model.Event;
@@ -19,12 +20,14 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class CompilationServiceImpl implements CompilationService {
-    CompilationRepository compilationRepository;
-    EventRepository eventRepository;
-    CompilationMapper compilationMapper;
+    private final CompilationRepository compilationRepository;
+    private final EventRepository eventRepository;
+    private final CompilationMapper compilationMapper;
 
     @Override
+    @Transactional
     public CompilationDto create(NewCompilationDto compilationDto) {
 
         return compilationMapper.toDto(compilationRepository.save(compilationMapper.toCompilation(compilationDto)));
@@ -56,12 +59,14 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         Compilation compilation = compilationRepository.getReferenceById(id);
         compilationRepository.delete(compilation);
     }
 
     @Override
+    @Transactional
     public void deleteEvent(long id, long eventId) {
         Compilation compilation = compilationRepository.getReferenceById(id);
         List<Event> listEvents = compilation.getEvents();
@@ -71,6 +76,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void addEvent(long id, long eventId) {
         Compilation compilation = compilationRepository.getReferenceById(id);
         List<Event> listEvents = compilation.getEvents();
@@ -80,6 +86,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void pinCompilation(long id) {
         Compilation compilation = compilationRepository.getReferenceById(id);
         compilation.setPinned(true);
@@ -87,6 +94,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void unpinCompilation(long id) {
         Compilation compilation = compilationRepository.getReferenceById(id);
         compilation.setPinned(false);

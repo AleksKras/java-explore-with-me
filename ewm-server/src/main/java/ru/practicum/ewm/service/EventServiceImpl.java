@@ -3,6 +3,7 @@ package ru.practicum.ewm.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.ForbiddenException;
 import ru.practicum.ewm.exception.ValidationException;
 import ru.practicum.ewm.mapper.EventMapper;
@@ -22,13 +23,16 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class EventServiceImpl implements EventService {
-    EventRepository eventRepository;
-    RequestRepository requestRepository;
-    UserService userService;
-    EventMapper eventMapper;
+    private final EventRepository eventRepository;
+    private final RequestRepository requestRepository;
+    private final UserService userService;
+    private final EventMapper eventMapper;
 
-    StatClient statClient;
+    private final CommentService commentService;
+
+    private final StatClient statClient;
 
     @Override
     public List<EventDto> getAll(List<Long> users,
@@ -75,8 +79,9 @@ public class EventServiceImpl implements EventService {
         List<EventDto> eventDtoList = new ArrayList<>();
 
         for (Event event : eventList) {
-
-            eventDtoList.add(eventMapper.toDto(event));
+            EventDto eventDto = eventMapper.toDto(event);
+            eventDto.setComments(commentService.getAllByEvent(event.getId()));
+            eventDtoList.add(eventDto);
         }
         return eventDtoList;
     }
@@ -145,6 +150,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto create(NewEventDto newEventDto, long userId) {
         User user = userService.getUserById(userId);
         Event event = eventMapper.toEventFromNew(newEventDto);
@@ -165,7 +171,9 @@ public class EventServiceImpl implements EventService {
             hits = hits + stats.getHits();
         }
         event.setViews(hits);
-        return eventMapper.toDto(event);
+        EventDto eventDto = eventMapper.toDto(event);
+        eventDto.setComments(commentService.getAllByEvent(event.getId()));
+        return eventDto;
     }
 
     @Override
@@ -179,7 +187,9 @@ public class EventServiceImpl implements EventService {
         if (event.getInitiator().getId() != id) {
             throw new ForbiddenException("Неверный ID инициатора");
         }
-        return eventMapper.toDto(event);
+        EventDto eventDto = eventMapper.toDto(event);
+        eventDto.setComments(commentService.getAllByEvent(event.getId()));
+        return eventDto;
     }
 
     @Override
@@ -201,6 +211,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto update(NewEventDto eventDto, long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         eventMapper.updateEventFromDto(eventDto, event);
@@ -208,6 +219,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto update(UpdateEventDto eventDto, long userId) {
         Event event = eventRepository.getReferenceById(eventDto.getEventId());
         if (event.getInitiator().getId() != userId) {
@@ -219,6 +231,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto publishEvent(long id) {
         Event event = eventRepository.getReferenceById(id);
         if (event.getState() == EventState.PENDING && event.getEventDate().isAfter(LocalDateTime.now().plusHours(1))) {
@@ -232,6 +245,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto rejectEvent(long id) {
         Event event = eventRepository.getReferenceById(id);
         if (event.getState() == EventState.PUBLISHED) {
@@ -244,6 +258,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto rejectEventByUserId(long id, long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getInitiator().getId() != id) {

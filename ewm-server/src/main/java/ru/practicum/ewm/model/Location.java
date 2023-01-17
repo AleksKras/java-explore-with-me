@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "LAT", nullable = false)
     private double lat;
     @Column(name = "LON", nullable = false)

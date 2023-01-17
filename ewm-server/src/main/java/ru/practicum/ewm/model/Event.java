@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "ANNOTATION", nullable = false)
     @Size(min = 1, max = 512)
     private String annotation;
