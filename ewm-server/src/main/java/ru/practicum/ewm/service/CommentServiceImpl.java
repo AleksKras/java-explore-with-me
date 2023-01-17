@@ -3,6 +3,7 @@ package ru.practicum.ewm.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.ValidationException;
 import ru.practicum.ewm.mapper.CommentMapper;
 import ru.practicum.ewm.mapper.PageMapper;
@@ -21,16 +22,18 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class CommentServiceImpl implements CommentService {
 
-    CommentRepository commentRepository;
-    UserService userService;
-    EventRepository eventRepository;
+    private final CommentRepository commentRepository;
+    private final UserService userService;
+    private final EventRepository eventRepository;
 
-    CommentMapper commentMapper;
+    private final CommentMapper commentMapper;
 
 
     @Override
+    @Transactional
     public CommentDto create(NewCommentDto newCommentDto, long userId, long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         User user = userService.getUserById(userId);
@@ -47,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentDto update(NewCommentDto newCommentDto, long userId, long commentId) {
         Comment comment = commentRepository.getReferenceById(commentId);
         if (comment.getAuthor().getId() != userId) {
@@ -80,6 +84,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void delete(long commentId) {
         Comment comment = commentRepository.getReferenceById(commentId);
         commentRepository.delete(comment);

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.mapper.CategoryMapper;
 import ru.practicum.ewm.mapper.PageMapper;
 import ru.practicum.ewm.model.Category;
@@ -17,21 +18,25 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
-    CategoryRepository categoryRepository;
-    CategoryMapper categoryMapper;
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
+    @Transactional
     public CategoryDto create(@Valid CategoryDto categoryDto) {
         return categoryMapper.toDto(categoryRepository.save(categoryMapper.toCategory(categoryDto)));
     }
 
     @Override
+    @Transactional
     public CategoryDto update(@Valid CategoryDto categoryDto) {
         return categoryMapper.toDto(categoryRepository.save(categoryMapper.toCategory(categoryDto)));
     }
 
     @Override
+    @Transactional
     public void delete(long categoryId) {
         Category category = categoryRepository.getReferenceById(categoryId);
         categoryRepository.delete(category);

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "ANNOTATION", nullable = false)
     private String annotation;
     @ManyToOne(fetch = FetchType.LAZY)

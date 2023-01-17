@@ -3,6 +3,7 @@ package ru.practicum.ewm.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.ewm.exception.ValidationException;
 import ru.practicum.ewm.mapper.RequestMapper;
@@ -20,11 +21,12 @@ import java.util.List;
 @Validated
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class RequestServiceImpl implements RequestService {
-    RequestRepository requestRepository;
-    RequestMapper requestMapper;
-    UserRepository userRepository;
-    EventRepository eventRepository;
+    private final RequestRepository requestRepository;
+    private final RequestMapper requestMapper;
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
     @Override
     public List<ParticipationRequestDto> getEventRequests(long id, long eventId) {
@@ -42,6 +44,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto confirmRequest(long id, long eventId, long reqId) {
         Request request = requestRepository.getReferenceById(reqId);
         if (request.getEvent().getId() != eventId) {
@@ -55,6 +58,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto rejectRequest(long id, long eventId, long reqId) {
         Request request = requestRepository.getReferenceById(reqId);
         if (request.getEvent().getId() != eventId) {
@@ -79,6 +83,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto create(long id, long eventId) {
         User user = userRepository.getReferenceById(id);
         Event event = eventRepository.getReferenceById(eventId);
@@ -108,6 +113,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto cancelRequest(long id, long requestId) {
         Request request = requestRepository.getReferenceById(requestId);
         if (request.getRequester().getId() != id) {

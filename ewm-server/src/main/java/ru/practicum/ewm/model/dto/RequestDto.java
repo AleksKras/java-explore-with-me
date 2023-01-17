@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class RequestDto {
-    private long id;
+    private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime created;
     private EventDto event;

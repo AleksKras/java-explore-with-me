@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "CREATED", nullable = false)
     private LocalDateTime created;
     @ManyToOne(fetch = FetchType.LAZY)

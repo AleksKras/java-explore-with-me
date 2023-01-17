@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventDto {
-    private long id;
+    private Long id;
     private String annotation;
     private CategoryDto category;
     private int confirmedRequests;
